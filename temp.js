@@ -1,22 +1,21 @@
-//app.js
-const express = require('express');
-const app = express();
-const server = require('http').Server(app);
+// index.js
+$(document).ready(() => {
 
-//Socket.io
-const io = require('socket.io')(server);
-io.on("connection", (socket) => {
-  console.log("🔌 New user connected! 🔌");
-})
+  const socket = io.connect();
 
-const exphbs  = require('express-handlebars');
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
+  $('#createUserBtn').click((e) => {
+    e.preventDefault();
+    let username = $('#usernameInput').val();
+    if(username.length > 0){
+      //Emit to the server the new user
+      socket.emit('new user', username);
+      $('.usernameForm').remove();
+    }
+  });
 
-app.get('/', (req, res) => {
-  res.render('index.handlebars');
-})
+  //socket listeners
+  socket.on('new user', (username) => {
+    console.log(`✋ ${username} has joined the chat! ✋`);
+  })
 
-server.listen('3000', () => {
-  console.log('Server listening on Port 3000');
 })

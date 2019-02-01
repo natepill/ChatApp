@@ -3,12 +3,18 @@
   <head>
     <meta charset="utf-8">
     <title>Make Chat</title>
-    <!--The socket.io npm module automatically sets up a /socket.io/socket.io.js path in your project to the socket.io frontend JavaScript. So we can update our handlebars to require the client-side socket.io script.-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="socket.io/socket.io.js"></script>
     <script src="/public/index.js"></script>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css'></link>
+    <link href='/public/index.css' rel='stylesheet' type='text/css'></link>
   </head>
   <body>
-    <h1>Socket.io</h1>
+<!-- update our view to have a username form. -->
+    <form class="usernameForm">
+      <input id="usernameInput" placeholder="Username"></input>
+      <button id="createUserBtn">Join Chat</button>
+    </form>
+
   </body>
 </html>
