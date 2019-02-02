@@ -10,4 +10,11 @@ module.exports = (io, socket) => {
         // io.emit sends data to all clients on the connection.
         // socket.emit sends data to the client that sent the original data to the server.
     })
+
+    //Listen for new messages
+    socket.on('new message', (data) => {
+        //send data back to all clients
+        console.log(`${data.sender}: ${data.message}`);
+        io.emit('new message', data);
+    })
 }
