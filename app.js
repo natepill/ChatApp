@@ -5,10 +5,16 @@ const server = require('http').Server(app);
 
 //Socket.io
 const io = require('socket.io')(server);
+//We'll store our online users here (locally)
+
+// Each socket has a unique ID that identifies it as a unique connected user. So we can make this ID do double duty to identify our users.
+let onlineUsers = {};
+
 // io.on("connection") is a special listener that fires whenever a new client connects.
 io.on('connection', (socket) => {
       // This file will be read on new socket connections
-    require('./sockets/chat.js')(io, socket);
+    // Make sure to send the users to our chat file
+    require('./sockets/chat.js')(io, socket, onlineUsers);
 })
 
 const exphbs = require('express-handlebars');

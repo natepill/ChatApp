@@ -1,21 +1,19 @@
-// index.js
-$(document).ready(() => {
+module.exports = (io, socket, onlineUsers) => {
 
-  const socket = io.connect();
 
-  $('#createUserBtn').click((e) => {
-    e.preventDefault();
-    let username = $('#usernameInput').val();
-    if(username.length > 0){
-      //Emit to the server the new user
-      socket.emit('new user', username);
-      $('.usernameForm').remove();
-    }
-  });
 
-  //socket listeners
   socket.on('new user', (username) => {
+    //Save the username as key to access the user's socket id
+    onlineUsers[username] = socket.id;
+    //Save the username to socket as well. This is important for later.
+    socket["username"] = username;
     console.log(`✋ ${username} has joined the chat! ✋`);
+    io.emit("new user", username);
   })
 
-})
+  socket.on('new message', (data) => {
+    console.log(`🎤 ${data.sender}: ${data.message} 🎤`)
+    io.emit('new message', data);
+  })
+
+}
