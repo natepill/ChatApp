@@ -1,4 +1,4 @@
-module.exports = (io, socket, onlineUsers) => {
+module.exports = (io, socket, onlineUsers, channels) => {
 
     //listen on "new user" socket emits
     // Now whenever the client emits a "new user" request, our server will be on it.
@@ -35,9 +35,21 @@ module.exports = (io, socket, onlineUsers) => {
     });
 
     socket.on('new channel', (newChannel) => {
-        console.log(newChannel);
+      console.log('New Channel Created:', newChannel);
     })
 
+    socket.on('new channel', (newChannel)=> {
+        //Save the new channel to our channel's object. The array will hold the messages.
+        channels[newChannel] = [];
+        //Have the socket join the new channel room
+        socket.join(newChannel);
+        // Infrom all clients of new channel
+        io.emit('new channel', newChannel);
+        // Emit to the client that made the new channel, to change their channel to the only one they made.
+        socket.emit('user change channel', {
+            channel: newChannel,
+            messages: channels[newChannel]
+        });
 
-
+    })
 }

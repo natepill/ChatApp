@@ -10,11 +10,15 @@ const io = require('socket.io')(server);
 // Each socket has a unique ID that identifies it as a unique connected user. So we can make this ID do double duty to identify our users.
 let onlineUsers = {};
 
+// We want General channel to be available without having to be created.
+// The array value that comes with the channel key will be used to save each channel's messages.
+let channels = {"General": []}
+
 // io.on("connection") is a special listener that fires whenever a new client connects.
 io.on('connection', (socket) => {
       // This file will be read on new socket connections
     // Make sure to send the users to our chat file
-    require('./sockets/chat.js')(io, socket, onlineUsers);
+    require('./sockets/chat.js')(io, socket, onlineUsers, channels);
 })
 
 const exphbs = require('express-handlebars');
