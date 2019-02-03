@@ -2,8 +2,15 @@
 $(document).ready(()=>{
     const socket = io.connect();
     let currentUser;
-    // Get the online users from the server
     socket.emit('get online users');
+    //Each user should be in the general channel by default.
+    socket.emit('user changed channel', "General");
+
+    //Users can change the channel by clicking on its name.
+    $(document).on('click', '.channel', (e)=>{
+      let newChannel = e.target.textContent;
+      socket.emit('user changed channel', newChannel);
+    });
 
   $('#createUserBtn').click((e)=>{
     e.preventDefault();
@@ -16,20 +23,20 @@ $(document).ready(()=>{
     }
   });
 
-  $('#sendChatBtn').click((e) =>{
-      e.preventDefault();
-      //Get the default text
-      let message = $('#chatInput').val();
-      //Make sure its not empty
-      if(message.length > 0){
-          //Emit the message with the current user to the server
-          socket.emit('new message', {
-              sender: currentUser,
-              message: message
-          });
-          $('#chatInput').val("");
-
-      }
+  $('#sendChatBtn').click((e) => {
+    e.preventDefault();
+    // Get the client's channel
+    let channel = $('.channel-current').text();
+    let message = $('#chatInput').val();
+    if(message.length > 0){
+      socket.emit('new message', {
+        sender : currentUser,
+        message : message,
+        //Send the channel over to the server
+        channel : channel
+      });
+      $('#chatInput').val("");
+    }
   });
 
 
@@ -52,11 +59,16 @@ $(document).ready(()=>{
 
   // Output the new message
   socket.on('new message', (data) => {
+    //Only append the message if the user is currently in that channel
+    let currentChannel = $('.channel-current').text();
+    if(currentChannel == data.channel){
       $('.messageContainer').append(`
-          <div class= "message">
-            <p class="messageUser">${data.sender}:</p>
-            <p class="messageTest">${data.message}</p>
-        </div>`)
+        <div class="message">
+          <p class="messageUser">${data.sender}: </p>
+          <p class="messageText">${data.message}</p>
+        </div>
+      `);
+    }
   })
 
   socket.on('get online users', (onlineUsers) => {
