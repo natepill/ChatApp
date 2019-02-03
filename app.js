@@ -3,6 +3,8 @@ const app = express();
 const server = require('http').Server(app);
 
 
+
+
 //Socket.io
 const io = require('socket.io')(server);
 //We'll store our online users here (locally)
@@ -34,6 +36,8 @@ app.get('/', (req, res) => {
     res.render('index.handlebars');
 })
 
-server.listen('3000', () => {
-    console.log('Server listening on Port 3000');
-})
+// server.listen('3000', () => {
+//     console.log('Server listening on Port 3000');
+// })
+
+server.listen(process.env.PORT || 5000)
